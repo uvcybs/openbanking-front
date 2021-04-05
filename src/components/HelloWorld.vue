@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button @click="clearSession">clearSession</button><br/>
     <div class="authBox">
       <h3>사용자 인증</h3>
       <span>code: {{ auth.code }}</span><br/>
@@ -17,15 +18,16 @@
       </form>
       <button @click="saveAuth">saveAuth</button>
     </div>
-    <div>
+    <br/>
+    <div class="tokenBox">
       <h3>토큰발급</h3>
       <span>access_token: {{ token.access_token }}</span><br/>
       <span>expires_in: {{ token.expires_in }}</span><br/>
       <span>refresh_token: {{ token.refresh_token }}</span><br/>
-      <span>scope: {{ token.scope }}</span><br/><br/>
-      <span>token_type: {{ token.token_type }}</span><br/><br/>
+      <span>scope: {{ token.scope }}</span><br/>
+      <span>token_type: {{ token.token_type }}</span><br/>
       <span>user_seq_no: {{ token.user_seq_no }}</span><br/><br/>
-      <button @click="requestToken">requestToken</button><br/>
+      <button @click="requestToken">requestToken</button>
       <button @click="saveToken">saveToken</button>
     </div>
   </div>
@@ -66,6 +68,24 @@ export default {
         this.token = JSON.parse(sessionStorage.token)
       }
     },
+    clearSession () {
+      sessionStorage.auth = ''
+      sessionStorage.token = ''
+      this.auth = {
+        code: '',
+        scope: '',
+        client_info: '',
+        state: ''
+      }
+      this.token = {
+        access_token: '',
+        expires_in: '',
+        refresh_token: '',
+        scope: '',
+        token_type: '',
+        user_seq_no: ''
+      }
+    },
     saveAuth () {
       sessionStorage.auth = JSON.stringify({
         code: this.$route.query.code,
@@ -83,7 +103,8 @@ export default {
         redirect_uri: 'http://localhost:8080',
         grant_type: 'authorization_code'
       })
-        .then(function (result) {
+        .then((result) => {
+          console.log(result)
           this.token = result.data
         })
     },
@@ -107,6 +128,14 @@ export default {
   }
 
   .authBox {
+    display: inline-block;
+    padding: 20px;
+    width: 400px;
+    text-align: left;
+    border: 1px solid gray;
+  }
+
+  .tokenBox {
     display: inline-block;
     padding: 20px;
     width: 400px;
