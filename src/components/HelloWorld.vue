@@ -30,6 +30,10 @@
       <button @click="requestToken">requestToken</button>
       <button @click="saveToken">saveToken</button>
     </div>
+    <div>
+      <h3>계좌리스트 조회</h3>
+      <button @click="getAccountList">getAccountList</button>
+    </div>
   </div>
 </template>
 
@@ -117,6 +121,18 @@ export default {
         token_type: this.token.token_type,
         user_seq_no: this.token.user_seq_no
       })
+    },
+    getAccountList () {
+      axios.get('http://localhost:8081/account/list', {
+        params: {access_token: this.token.access_token,
+          user_seq_no: this.token.user_seq_no,
+          include_cancel_yn: 'Y',
+          sort_order: 'D'
+        }
+      })
+        .then((result) => {
+          console.log(result)
+        })
     }
   }
 }
